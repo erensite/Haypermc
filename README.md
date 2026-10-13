@@ -7,11 +7,13 @@ HayperMC Minecraft launcher for Windows.
 - **Windows 7 / 8 / 8.1:** `release/HayperMC-Launcher-Windows7-8-Electron22.3.27.exe`
 - **Windows 10 / 11:** `release/HayperMC-Launcher-Windows10-11-Electron33.4.11.exe`
 
-Both installers are x64 NSIS packages.
-
 ## Build targets
 
-- `package.win7.json` uses Electron `22.3.27` for Windows 7/8 compatibility.
-- `package.json` uses Electron `33.4.11` for Windows 10/11.
+- `package.win7.json`: Electron 22.3.27 for Windows 7/8/8.1.
+- `package.json`: Electron 33.4.11 for Windows 10/11.
 
-Java is required to launch Minecraft. The launcher downloads Minecraft assets and selected loaders/mods when needed.
+## Included Java runtime
+
+On Windows, the launcher automatically detects the Java major version required by the selected Minecraft version and downloads the matching Temurin JRE when needed. Java does not need to be installed separately.
+
+The launcher downloads Minecraft assets and selected loaders/mods when needed.

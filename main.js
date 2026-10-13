@@ -49,11 +49,31 @@ ipcMain.handle('login:off', (e, name) => {
 });
 
 // ---- loaders ----
-const runJar = (jar, args) => new Promise((res, rej) =>
-  execFile('java', ['-jar', jar, ...args], { cwd: ROOT }, e => e ? rej(e) : res()));
+const runJar = (jar, args, java) => new Promise((res, rej) =>
+  execFile(java.replace('javaw.exe', 'java.exe'), ['-jar', jar, ...args], { cwd: ROOT }, e => e ? rej(e) : res()));
+
+// Bundled Java: downloads the right Temurin JRE per Minecraft version (Windows)
+async function javaFor(v) {
+  if (process.platform !== 'win32') return 'java';
+  let major = 8;
+  try {
+    const m = await J('https://launchermeta.mojang.com/mc/game/version_manifest_v2.json');
+    major = (await J(m.versions.find(x => x.id === v).url)).javaVersion.majorVersion;
+  } catch {}
+  const dir = path.join(ROOT, 'runtime', String(major));
+  const find = () => { if (!fs.existsSync(dir)) return null;
+    const d = fs.readdirSync(dir).find(n => fs.existsSync(path.join(dir, n, 'bin', 'javaw.exe')));
+    return d && path.join(dir, d, 'bin', 'javaw.exe'); };
+  let p = find(); if (p) return p;
+  log(`Java ${major} downloading...`);
+  const z = path.join(ROOT, 'java.zip');
+  await dl(`https://api.adoptium.net/v3/binary/latest/${major}/ga/windows/x64/jre/hotspot/normal/eclipse`, z);
+  new AdmZip(z).extractAllTo(dir, true); fs.unlinkSync(z);
+  return find();
+}
 const vdirs = () => fs.existsSync(path.join(ROOT, 'versions')) ? fs.readdirSync(path.join(ROOT, 'versions')) : [];
 
-async function prepare(v, loader) {
+async function prepare(v, loader, java) {
   if (loader === 'vanilla') return {};
   if (loader === 'fabric') {
     const l = (await J(`https://meta.fabricmc.net/v2/versions/loader/${v}`))[0].loader.version;
@@ -81,16 +101,17 @@ async function prepare(v, loader) {
     const jar = path.join(ROOT, 'installer.jar');
     await dl(url, jar);
     fs.writeFileSync(path.join(ROOT, 'launcher_profiles.json'), '{"profiles":{}}');
-    await runJar(jar, ['--installClient', ROOT]);
+    await runJar(jar, ['--installClient', ROOT], java);
   }
   return { custom: found() };
 }
 
 ipcMain.handle('play', async (e, { v, type, loader }) => {
   if (!auth) throw new Error('login');
-  const extra = await prepare(v, loader);
+  const java = await javaFor(v);
+  const extra = await prepare(v, loader, java);
   const [host, port] = cfg.server.split(':');
-  const o = { authorization: auth, root: ROOT,
+  const o = { authorization: auth, root: ROOT, javaPath: java,
     version: { number: v, type: type === 'release' ? 'release' : 'snapshot', ...(extra.custom ? { custom: extra.custom } : {}) },
     memory: { max: cfg.ram + 'G', min: '1G' } };
   if (cfg.autoJoin) o.server = { host, port: port || '25565' };

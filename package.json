@@ -5,7 +5,7 @@
   "description": "HayperMC Launcher",
   "scripts": {
     "start": "electron .",
-    "dist": "electron-builder --win"
+    "dist": "electron-builder --win --publish never"
   },
   "dependencies": {
     "adm-zip": "^0.5.16",
@@ -18,13 +18,24 @@
   },
   "build": {
     "appId": "com.haypermc.launcher",
-    "productName": "HayperMC Launcher (Windows 10-11)",
+    "productName": "HayperMC Launcher",
     "files": [
       "**/*"
     ],
     "win": {
       "target": "nsis",
       "icon": "assets/logo.png"
-    }
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "erensite",
+        "repo": "Haypermc"
+      }
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/erensite/Haypermc.git"
   }
 }
