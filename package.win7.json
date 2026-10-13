@@ -1,0 +1,30 @@
+{
+  "name": "haypermc-launcher",
+  "version": "1.0.0",
+  "main": "main.js",
+  "description": "HayperMC Launcher",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --win"
+  },
+  "dependencies": {
+    "adm-zip": "^0.5.16",
+    "minecraft-launcher-core": "^3.18.2",
+    "msmc": "^5.0.5"
+  },
+  "devDependencies": {
+    "electron": "22.3.27",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "com.haypermc.launcher",
+    "productName": "HayperMC Launcher",
+    "files": [
+      "**/*"
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "assets/logo.png"
+    }
+  }
+}

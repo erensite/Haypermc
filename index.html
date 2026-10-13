@@ -1,0 +1,83 @@
+<!doctype html><html><head><meta charset="utf-8"><title>HayperMC Launcher</title>
+<style>
+:root{--bg:#0b0b14;--card:#14142200;--c:#171728;--line:#26264a;--t:#eef;--m:#8a8ab0;--a:#8b5cf6;--g:#22c55e;--r:#ef4444}
+*{box-sizing:border-box}body{margin:0;font:14px system-ui,sans-serif;background:radial-gradient(1200px 600px at 70% -10%,#2a1b5a55,transparent),var(--bg);color:var(--t);display:flex;height:100vh;overflow:hidden}
+aside{width:200px;padding:16px;border-right:1px solid var(--line);display:flex;flex-direction:column;gap:6px}
+aside img{width:100%;animation:float 4s ease-in-out infinite}
+@keyframes float{50%{transform:translateY(-5px)}}
+.nav{padding:10px 12px;border-radius:10px;cursor:pointer;color:var(--m);transition:.2s}
+.nav:hover,.nav.on{background:var(--c);color:var(--t);transform:translateX(3px)}
+main{flex:1;padding:22px;overflow:auto}
+.tab{display:none;animation:in .35s}.tab.on{display:block}
+@keyframes in{from{opacity:0;transform:translateY(8px)}}
+.card{background:var(--c);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:14px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+select,input,button{background:#0f0f1d;color:var(--t);border:1px solid var(--line);border-radius:10px;padding:9px 12px;font:inherit}
+button{cursor:pointer;transition:.2s}button:hover{border-color:var(--a);transform:translateY(-1px)}
+.play{background:linear-gradient(90deg,#7c3aed,#22c55e);border:0;font-size:16px;font-weight:700;padding:13px 34px;animation:glow 2.4s infinite}
+@keyframes glow{50%{box-shadow:0 0 22px #8b5cf688}}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--r);display:inline-block}.dot.on{background:var(--g);box-shadow:0 0 10px var(--g)}
+.m{color:var(--m)}.item{display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
+.item img{width:40px;height:40px;border-radius:8px}.item div{flex:1}
+#log{height:80px;overflow:auto;font:12px monospace;color:var(--m)}
+#bar{height:4px;background:var(--a);width:0;border-radius:4px;transition:.2s}
+#ov{position:fixed;inset:0;background:#000c;display:none;place-items:center;z-index:9}
+#ov .card{text-align:center;min-width:300px}#ov button{display:block;width:100%;margin:8px 0}
+</style></head><body>
+<div id="ov"><div class="card"><h2>🌐 Language / Dil</h2>
+<button onclick="pick('tr')">Türkçe</button><button onclick="pick('en')">English</button>
+<button onclick="pick('es')">Español</button><button onclick="pick('az')">Azərbaycanca</button></div></div>
+<aside><img src="assets/logo.png">
+<div class="nav on" data-t="home" data-i="play"></div><div class="nav" data-t="mods" data-i="mods"></div>
+<div class="nav" data-t="packs" data-i="packs"></div><div class="nav" data-t="set" data-i="settings"></div></aside>
+<main>
+<section class="tab on" id="home">
+ <div class="card row"><span class="dot" id="dot"></span><b id="sname">HayperMC</b><span class="m" id="sinfo"></span></div>
+ <div class="card"><div class="row"><span data-i="account"></span>
+  <input id="nick" placeholder="Nick"><button onclick="off()" data-i="offline"></button>
+  <button onclick="ms()">Microsoft</button><b id="who"></b></div></div>
+ <div class="card"><div class="row">
+  <select id="ver"></select><select id="ldr"><option value="vanilla">Vanilla</option><option>fabric</option><option>forge</option><option>neoforge</option></select></div>
+  <div class="row m" style="margin-top:10px">
+   <label><input type="checkbox" id="f_release" checked> Release</label><label><input type="checkbox" id="f_snapshot"> Snapshot</label>
+   <label><input type="checkbox" id="f_old_beta"> Beta</label><label><input type="checkbox" id="f_old_alpha"> Alpha</label></div></div>
+ <button class="play" onclick="play()" data-i="play"></button>
+ <div class="card" style="margin-top:14px"><div id="bar"></div><div id="log"></div></div>
+</section>
+<section class="tab" id="mods"><div class="card row"><input id="q1" placeholder="..."><button onclick="srch('mod')" data-i="search"></button></div><div id="r_mod"></div></section>
+<section class="tab" id="packs"><div class="card row"><input id="q2" placeholder="..."><button onclick="srch('modpack')" data-i="search"></button></div><div id="r_modpack"></div></section>
+<section class="tab" id="set"><div class="card">
+ <div class="row"><label><input type="checkbox" id="aj" onchange="api.invoke('cfg:set',{autoJoin:this.checked})"> <span data-i="autojoin"></span></label></div><br>
+ <div class="row"><span data-i="ram"></span><input id="ram" type="number" min="1" max="32" style="width:70px" onchange="api.invoke('cfg:set',{ram:+this.value})"> GB</div><br>
+ <div class="row"><span data-i="lang"></span><select id="lg" onchange="pick(this.value)"><option value="tr">Türkçe</option><option value="en">English</option><option value="es">Español</option><option value="az">Azərbaycanca</option></select></div></div></section>
+</main>
+<script>
+const L={
+tr:{play:'Oyna',mods:'Modlar',packs:'Modpackler',settings:'Ayarlar',account:'Hesap',offline:'Offline giriş',search:'Ara',install:'Kur',autojoin:'Oyuna girince sunucuya otomatik gir',ram:'RAM',lang:'Dil',online:'Açık',off:'Kapalı',players:'oyuncu',login:'Önce giriş yap',done:'Kuruldu'},
+en:{play:'Play',mods:'Mods',packs:'Modpacks',settings:'Settings',account:'Account',offline:'Offline login',search:'Search',install:'Install',autojoin:'Auto-join server on game start',ram:'RAM',lang:'Language',online:'Online',off:'Offline',players:'players',login:'Log in first',done:'Installed'},
+es:{play:'Jugar',mods:'Mods',packs:'Modpacks',settings:'Ajustes',account:'Cuenta',offline:'Modo offline',search:'Buscar',install:'Instalar',autojoin:'Entrar al servidor automáticamente',ram:'RAM',lang:'Idioma',online:'En línea',off:'Fuera de línea',players:'jugadores',login:'Inicia sesión primero',done:'Instalado'},
+az:{play:'Oyna',mods:'Modlar',packs:'Modpacklər',settings:'Ayarlar',account:'Hesab',offline:'Offline giriş',search:'Axtar',install:'Quraşdır',autojoin:'Oyuna girəndə serverə avtomatik qoşul',ram:'RAM',lang:'Dil',online:'Aktiv',off:'Deaktiv',players:'oyunçu',login:'Əvvəlcə daxil ol',done:'Quraşdırıldı'}};
+let C,V=[],lang='tr',S=null;const $=id=>document.getElementById(id),t=k=>L[lang][k];
+function tr(){document.querySelectorAll('[data-i]').forEach(e=>e.textContent=t(e.dataset.i));$('lg').value=lang;paint()}
+async function pick(l){lang=l;await api.invoke('cfg:set',{lang:l});$('ov').style.display='none';tr()}
+document.querySelectorAll('.nav').forEach(n=>n.onclick=()=>{document.querySelectorAll('.nav,.tab').forEach(x=>x.classList.remove('on'));n.classList.add('on');$(n.dataset.t).classList.add('on')});
+function fill(){const on=['release','snapshot','old_beta','old_alpha'].filter(k=>$('f_'+k).checked);const cur=$('ver').value;
+ $('ver').innerHTML=V.filter(v=>on.includes(v.type)).map(v=>`<option value="${v.id}" data-ty="${v.type}">${v.id}</option>`).join('');if(cur)$('ver').value=cur}
+document.querySelectorAll('[id^=f_]').forEach(c=>c.onchange=fill);
+function paint(){if(!S)return;$('dot').className='dot'+(S.online?' on':'');
+ $('sinfo').textContent=S.online?`${t('online')} · ${S.players?S.players.online+'/'+S.players.max:''} ${t('players')} · ${S.version||''} · ${S.motd||''}`:t('off')}
+async function stat(){S=await api.invoke('status');paint()}
+async function ms(){try{$('who').textContent=(await api.invoke('login:ms')).name}catch(e){$('log').textContent=e.message}}
+async function off(){const n=$('nick').value.trim();if(n)$('who').textContent=(await api.invoke('login:off',n)).name}
+async function play(){try{const o=$('ver').selectedOptions[0];await api.invoke('play',{v:o.value,type:o.dataset.ty,loader:$('ldr').value})}catch(e){$('log').textContent=e.message.includes('login')?t('login'):e.message}}
+async function srch(kind){const q=$(kind==='mod'?'q1':'q2').value;
+ const r=await api.invoke('mr:search',{q,kind,v:$('ver').value,loader:$('ldr').value});
+ $('r_'+kind).innerHTML=r.map(h=>`<div class="item"><img src="${h.icon_url||''}"><div><b>${h.title}</b><br><span class="m">${h.description}</span></div><button onclick="inst('${h.project_id}','${kind}',this)">${t('install')}</button></div>`).join('')}
+async function inst(id,kind,b){b.textContent='...';try{const r=await api.invoke('mr:install',{id,kind,v:$('ver').value,loader:$('ldr').value});
+ if(r.v){$('ver').value=r.v;$('ldr').value=r.loader}b.textContent=t('done')}catch(e){b.textContent='✗'}}
+api.on('log',m=>{const l=$('log');l.textContent+=String(m).slice(0,200)+'\n';l.scrollTop=l.scrollHeight});
+api.on('progress',p=>$('bar').style.width=(p.task/p.total*100)+'%');
+(async()=>{C=await api.invoke('cfg:get');lang=C.lang||'tr';if(!C.lang)$('ov').style.display='grid';
+ $('aj').checked=C.autoJoin;$('ram').value=C.ram;if(C.user)$('who').textContent=C.user.name;
+ V=await api.invoke('versions');fill();tr();stat();setInterval(stat,30000)})();
+</script></body></html>
