@@ -1,19 +1,25 @@
 # HayperMC Launcher
 
-HayperMC Minecraft launcher for Windows.
+HayperMC için Windows masaüstü Minecraft launcher.
 
-## Downloads
+Bu proje web sitesi değildir. `index.html`, Electron masaüstü uygulamasının EXE içinde çalışan arayüzüdür; kullanıcı programı kurup masaüstünden açar.
 
-- **Windows 7 / 8 / 8.1:** `release/HayperMC-Launcher-Windows7-8-Electron22.3.27.exe`
-- **Windows 10 / 11:** `release/HayperMC-Launcher-Windows10-11-Electron33.4.11.exe`
+## İndirme
 
-## Build targets
+- Windows 7 / 8 / 8.1: `release/HayperMC-Launcher-Windows7-8-Electron22.3.27.exe`
+- Windows 10 / 11: `release/HayperMC-Launcher-Windows10-11-Electron33.4.11.exe`
 
-- `package.win7.json`: Electron 22.3.27 for Windows 7/8/8.1.
-- `package.json`: Electron 33.4.11 for Windows 10/11.
+## Özellikler
 
-## Included Java runtime
+- Minecraft sürümüne uygun Temurin Java’yı otomatik indirme
+- Microsoft ve offline hesaplar
+- Birden fazla kurulum profili
+- Modrinth ve CurseForge mod araması
+- Modpack, resource pack ve shader desteği
+- Fabric, Forge, NeoForge ve Quilt filtreleri
+- Türkçe, İngilizce, İspanyolca ve Azerbaycanca arayüz
 
-On Windows, the launcher automatically detects the Java major version required by the selected Minecraft version and downloads the matching Temurin JRE when needed. Java does not need to be installed separately.
+## Derleme hedefleri
 
-The launcher downloads Minecraft assets and selected loaders/mods when needed.
+- `package.win7.json`: Electron 22.3.27, Windows 7/8/8.1
+- `package.json`: Electron 33.4.11, Windows 10/11

@@ -1,83 +1,216 @@
 <!doctype html><html><head><meta charset="utf-8"><title>HayperMC Launcher</title>
 <style>
-:root{--bg:#0b0b14;--card:#14142200;--c:#171728;--line:#26264a;--t:#eef;--m:#8a8ab0;--a:#8b5cf6;--g:#22c55e;--r:#ef4444}
-*{box-sizing:border-box}body{margin:0;font:14px system-ui,sans-serif;background:radial-gradient(1200px 600px at 70% -10%,#2a1b5a55,transparent),var(--bg);color:var(--t);display:flex;height:100vh;overflow:hidden}
-aside{width:200px;padding:16px;border-right:1px solid var(--line);display:flex;flex-direction:column;gap:6px}
-aside img{width:100%;animation:float 4s ease-in-out infinite}
-@keyframes float{50%{transform:translateY(-5px)}}
-.nav{padding:10px 12px;border-radius:10px;cursor:pointer;color:var(--m);transition:.2s}
-.nav:hover,.nav.on{background:var(--c);color:var(--t);transform:translateX(3px)}
-main{flex:1;padding:22px;overflow:auto}
-.tab{display:none;animation:in .35s}.tab.on{display:block}
-@keyframes in{from{opacity:0;transform:translateY(8px)}}
-.card{background:var(--c);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:14px}
+:root{--bg:#0a0a12;--c:#15152a;--line:#262650;--t:#eef;--m:#8a8ab0;--a:#8b5cf6;--g:#22c55e;--r:#ef4444}
+*{box-sizing:border-box;user-select:none}input{user-select:text}
+html,body{height:100%}
+body{margin:0;font:14px 'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--t);display:flex;overflow:hidden}
+::-webkit-scrollbar{width:8px}::-webkit-scrollbar-thumb{background:#2d2d5a;border-radius:8px}
+#title{height:38px;display:flex;align-items:center;padding:0 8px;-webkit-app-region:drag;flex:none}
+.sp{flex:1}
+.nav{padding:15px 16px;cursor:pointer;color:var(--m);position:relative;transition:.2s;-webkit-app-region:no-drag}
+.nav::after{content:'';position:absolute;left:50%;right:50%;bottom:0;height:3px;border-radius:3px;background:var(--a);transition:.25s}
+.nav:hover{color:var(--t)}.nav.on{color:#fff}.nav.on::after{left:12px;right:12px}
+.wb{width:36px;height:28px;display:grid;place-items:center;border-radius:6px;cursor:pointer;color:var(--m);-webkit-app-region:no-drag;transition:.15s}
+.wb:hover{background:#ffffff18;color:#fff}.wb.x:hover{background:var(--r)}
+main{flex:1;position:relative;overflow:auto;padding:22px 28px}
+#bg{position:fixed;inset:0;overflow:hidden;z-index:0;pointer-events:none;background:radial-gradient(700px 420px at 20% 30%,#7c3aed3a,transparent),radial-gradient(600px 400px at 85% 75%,#22c55e26,transparent);animation:drift 10s ease-in-out infinite alternate}
+@keyframes drift{to{filter:hue-rotate(45deg)}}
+.px{position:absolute;bottom:-20px;width:8px;height:8px;opacity:0;animation:rise linear infinite}
+@keyframes rise{10%{opacity:.7}to{transform:translateY(-700px) rotate(180deg);opacity:0}}
+.tab{display:none;position:relative;z-index:1;animation:in .4s}.tab.on{display:block}
+@keyframes in{from{opacity:0;transform:translateY(10px)}}
+#home.on{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:calc(100vh - 38px - 88px - 44px);text-align:center;gap:16px}
+#home img{width:min(500px,72%);animation:float 4s ease-in-out infinite;filter:drop-shadow(0 0 32px #8b5cf688)}
+@keyframes float{50%{transform:translateY(-8px)}}
+.card{background:#15152acc;border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:14px;backdrop-filter:blur(6px)}
 .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-select,input,button{background:#0f0f1d;color:var(--t);border:1px solid var(--line);border-radius:10px;padding:9px 12px;font:inherit}
-button{cursor:pointer;transition:.2s}button:hover{border-color:var(--a);transform:translateY(-1px)}
-.play{background:linear-gradient(90deg,#7c3aed,#22c55e);border:0;font-size:16px;font-weight:700;padding:13px 34px;animation:glow 2.4s infinite}
-@keyframes glow{50%{box-shadow:0 0 22px #8b5cf688}}
-.dot{width:10px;height:10px;border-radius:50%;background:var(--r);display:inline-block}.dot.on{background:var(--g);box-shadow:0 0 10px var(--g)}
-.m{color:var(--m)}.item{display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
-.item img{width:40px;height:40px;border-radius:8px}.item div{flex:1}
-#log{height:80px;overflow:auto;font:12px monospace;color:var(--m)}
-#bar{height:4px;background:var(--a);width:0;border-radius:4px;transition:.2s}
-#ov{position:fixed;inset:0;background:#000c;display:none;place-items:center;z-index:9}
+select,input,button{background:#0f0f1d;color:var(--t);border:1px solid var(--line);border-radius:10px;padding:9px 12px;font:inherit;outline:0;transition:.2s}
+input:focus,select:focus{border-color:var(--a);box-shadow:0 0 0 3px #8b5cf622}
+button{cursor:pointer}button:hover{border-color:var(--a);transform:translateY(-1px)}button:active{transform:scale(.97)}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--r);display:inline-block}.dot.on{background:var(--g);box-shadow:0 0 10px var(--g);animation:pl 2s infinite}
+@keyframes pl{50%{opacity:.5}}
+.m{color:var(--m)}
+.item{display:flex;gap:12px;align-items:center;padding:10px 6px;border-bottom:1px solid var(--line);border-radius:10px;transition:.2s}
+.item:hover{background:#ffffff08;transform:translateX(3px)}
+.item img{width:42px;height:42px;border-radius:9px}.item div{flex:1}
+#log{max-height:48px;overflow:hidden;font:12px monospace;color:var(--m);max-width:560px;text-align:left}
+button .ic,.nav .ic,.wb .ic{vertical-align:-3px}.nav .ic{margin-right:8px}button span:not(:empty){margin-left:6px}
+.ic{stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.play{display:flex;align-items:center;justify-content:center}.play .ic{margin-right:8px}.play span{margin-left:0!important}
+.nav{display:flex;align-items:center}.nav span{margin:0!important}
+#bottom{height:88px;flex:none;display:flex;align-items:center;gap:14px;padding:0 22px;background:#0d0d1a;border-top:1px solid var(--line);position:relative;z-index:5}
+#bottom .grp{display:flex;gap:8px;align-items:center}
+#nick{width:140px}
+.pw{margin-left:auto;position:relative;width:210px;height:56px;border-radius:12px;overflow:hidden}
+.play{width:100%;height:100%;border:0;border-radius:12px;font-size:19px;font-weight:800;letter-spacing:3px;color:#fff;background:linear-gradient(90deg,#16a34a,#22c55e);position:relative;overflow:hidden;animation:glow 2.4s infinite}
+.play::before{content:'';position:absolute;top:0;left:-60%;width:40%;height:100%;background:linear-gradient(90deg,transparent,#fff5,transparent);transform:skewX(-20deg);animation:sh 3s infinite}
+@keyframes sh{to{left:130%}}@keyframes glow{50%{box-shadow:0 0 26px #22c55e99}}
+#bar{position:absolute;left:0;bottom:0;height:4px;width:0;background:#fff;transition:.2s}
+#flt{position:absolute;left:30px;bottom:96px;background:#15152a;border:1px solid var(--line);border-radius:12px;padding:12px;display:none;flex-direction:column;gap:8px;animation:in .2s}
+#flt.show{display:flex}
+#ov,#md{position:fixed;inset:0;background:#000c;display:none;place-items:center;z-index:9}
 #ov .card{text-align:center;min-width:300px}#ov button{display:block;width:100%;margin:8px 0}
+
+#side{width:108px;flex:none;background:#0d0d1a;border-right:1px solid var(--line);display:flex;flex-direction:column;align-items:center;padding:14px 8px;gap:6px;z-index:6;position:relative}
+#side .lg{width:80px;margin-bottom:14px;animation:float 4s ease-in-out infinite}
+#col{flex:1;min-width:0;display:flex;flex-direction:column;position:relative;z-index:1}
+.nav{flex-direction:column;justify-content:center;width:86px;padding:12px 4px;border-radius:14px;font-size:12px;gap:6px;text-align:center}
+.nav::after{display:none}.nav .ic{width:26px;height:26px;margin:0!important}
+.nav.on{background:#8b5cf630;color:#fff}.nav:hover{background:#ffffff0a}
+.sub{display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 14px;border:1px solid transparent;border-radius:12px;background:transparent;color:var(--m);font-size:12px}
+.sub span{margin:0!important}.sub .ic{width:22px;height:22px}
+.sub.on{border-color:var(--a);color:#fff;background:#8b5cf620}
+.dg{display:flex;gap:18px;align-items:flex-start}.dl{flex:1;min-width:0}.df{width:250px;flex:none}
+.df label{display:block;color:var(--m);font-size:12px;letter-spacing:1px;margin:0 0 6px;text-transform:uppercase}
+.df select,.df input{width:100%;margin-bottom:14px}
+.pc{display:flex;gap:14px;padding:14px;border:1px solid var(--line);border-radius:14px;background:#15152acc;margin-bottom:12px;cursor:pointer;transition:.2s;animation:in .35s}
+.pc:hover{border-color:var(--a);transform:translateY(-2px)}
+.pc img{width:84px;height:84px;border-radius:12px;object-fit:cover;flex:none;background:#0f0f1d}
+.pb{flex:1;min-width:0}.pd{margin:4px 0 8px;max-height:40px;overflow:hidden}
+.tags span{display:inline-block;margin-right:10px;color:var(--m);font-size:12px}
+.ps{display:flex;flex-direction:column;align-items:flex-end;gap:6px;color:var(--m);flex:none}
+.bd{border:1px solid var(--a);border-radius:8px;padding:3px 10px;color:#fff;font-size:12px}
+.pgb{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:12px;padding:6px 10px}
 </style></head><body>
-<div id="ov"><div class="card"><h2>🌐 Language / Dil</h2>
+<div id="ov"><div class="card"><h2>Language / Dil</h2>
 <button onclick="pick('tr')">Türkçe</button><button onclick="pick('en')">English</button>
 <button onclick="pick('es')">Español</button><button onclick="pick('az')">Azərbaycanca</button></div></div>
-<aside><img src="assets/logo.png">
-<div class="nav on" data-t="home" data-i="play"></div><div class="nav" data-t="mods" data-i="mods"></div>
-<div class="nav" data-t="packs" data-i="packs"></div><div class="nav" data-t="set" data-i="settings"></div></aside>
+<div id="md" onclick="if(event.target===this)md()"><div class="card" id="mdc" style="min-width:320px;max-width:460px"></div></div>
+<div id="bg"></div>
+<div id="side"><img class="lg" src="assets/logo.png">
+<div class="nav on" data-t="home"><i data-ic="home"></i><span data-i="menu"></span></div>
+<div class="nav" data-t="disc"><i data-ic="disc"></i><span data-i="discover"></span></div>
+<div class="nav" data-t="mods"><i data-ic="mods"></i><span data-i="mods"></span></div>
+<div class="nav" data-t="vers"><i data-ic="vers"></i><span data-i="versions"></span></div>
+<div class="nav" data-t="set"><i data-ic="set"></i><span data-i="settings"></span></div></div>
+<div id="col"><div id="title"><div class="sp"></div><div class="wb" onclick="api.invoke('win','min')"><i data-ic="min"></i></div><div class="wb" onclick="api.invoke('win','max')"><i data-ic="max"></i></div><div class="wb x" onclick="api.invoke('win','close')"><i data-ic="x"></i></div></div>
 <main>
-<section class="tab on" id="home">
- <div class="card row"><span class="dot" id="dot"></span><b id="sname">HayperMC</b><span class="m" id="sinfo"></span></div>
- <div class="card"><div class="row"><span data-i="account"></span>
-  <input id="nick" placeholder="Nick"><button onclick="off()" data-i="offline"></button>
-  <button onclick="ms()">Microsoft</button><b id="who"></b></div></div>
- <div class="card"><div class="row">
-  <select id="ver"></select><select id="ldr"><option value="vanilla">Vanilla</option><option>fabric</option><option>forge</option><option>neoforge</option></select></div>
-  <div class="row m" style="margin-top:10px">
-   <label><input type="checkbox" id="f_release" checked> Release</label><label><input type="checkbox" id="f_snapshot"> Snapshot</label>
-   <label><input type="checkbox" id="f_old_beta"> Beta</label><label><input type="checkbox" id="f_old_alpha"> Alpha</label></div></div>
- <button class="play" onclick="play()" data-i="play"></button>
- <div class="card" style="margin-top:14px"><div id="bar"></div><div id="log"></div></div>
-</section>
-<section class="tab" id="mods"><div class="card row"><input id="q1" placeholder="..."><button onclick="srch('mod')" data-i="search"></button></div><div id="r_mod"></div></section>
-<section class="tab" id="packs"><div class="card row"><input id="q2" placeholder="..."><button onclick="srch('modpack')" data-i="search"></button></div><div id="r_modpack"></div></section>
+<section class="tab on" id="home"><img src="assets/logo.png">
+ <div class="card row" style="margin:0"><span class="dot" id="dot"></span><b id="sname">HayperMC</b><span class="m" id="sinfo"></span></div>
+ <div class="card row" style="margin:0"><span class="m" data-i="profile"></span><select id="psel" onchange="selInst(this.value)"></select></div>
+ <div class="card row" style="margin:0"><span class="m" data-i="sel"></span><b id="selv"></b></div>
+ <div id="log"></div></section>
+<section class="tab" id="disc">
+ <div class="row" style="margin-bottom:14px">
+  <button class="sub on" data-k="mod" onclick="dkind('mod')"><i data-ic="mods"></i><span data-i="mods"></span></button>
+  <button class="sub" data-k="modpack" onclick="dkind('modpack')"><i data-ic="packs"></i><span data-i="packs"></span></button>
+  <button class="sub" data-k="resourcepack" onclick="dkind('resourcepack')"><i data-ic="pack"></i><span data-i="krp"></span></button>
+  <button class="sub" data-k="shader" onclick="dkind('shader')"><i data-ic="bulb"></i><span data-i="kshader"></span></button>
+  <div class="sp"></div>
+  <div class="pgb"><button onclick="dpage(-1)"><i data-ic="left"></i></button><span id="dpg">1 / 1</span><button onclick="dpage(1)"><i data-ic="right"></i></button></div>
+ </div>
+ <div class="dg"><div class="dl" id="dlist"></div><div class="df">
+  <label data-i="sname"></label><input id="dq" oninput="dsd()">
+  <label data-i="gver"></label><select id="dver" onchange="dgo()"></select>
+  <label data-i="platform"></label><select id="dsrc" onchange="dgo()"><option value="mr">Modrinth</option><option value="cf">CurseForge</option></select>
+  <label data-i="sort"></label><select id="dsort" onchange="dgo()"><option value="relevance" data-i="srel"></option><option value="downloads" data-i="sdl"></option><option value="follows" data-i="sfol"></option><option value="newest" data-i="snew"></option><option value="updated" data-i="supd"></option></select>
+  <div id="dlw"><label data-i="ldrf"></label><select id="dldr" onchange="dgo()"><option value="" data-i="any"></option><option>fabric</option><option>forge</option><option>neoforge</option><option>quilt</option></select></div>
+ </div></div></section>
+<section class="tab" id="mods"><h3 data-i="installed"></h3><div class="card" id="inst"></div></section>
+<section class="tab" id="vers"><h3 data-i="profiles"></h3><div class="card row"><input id="iname" placeholder="..." style="flex:1"><button onclick="icreate()" data-i="create"></button></div><div class="card" id="ilst"></div><h3 data-i="vinst"></h3><div class="card" id="vlst"></div></section>
 <section class="tab" id="set"><div class="card">
  <div class="row"><label><input type="checkbox" id="aj" onchange="api.invoke('cfg:set',{autoJoin:this.checked})"> <span data-i="autojoin"></span></label></div><br>
  <div class="row"><span data-i="ram"></span><input id="ram" type="number" min="1" max="32" style="width:70px" onchange="api.invoke('cfg:set',{ram:+this.value})"> GB</div><br>
+ <div class="row"><span>CurseForge API key</span><input id="cfk" onchange="api.invoke('cfg:set',{cfKey:this.value.trim()})"></div><br>
  <div class="row"><span data-i="lang"></span><select id="lg" onchange="pick(this.value)"><option value="tr">Türkçe</option><option value="en">English</option><option value="es">Español</option><option value="az">Azərbaycanca</option></select></div></div></section>
 </main>
-<script>
+<div id="flt"><label><input type="checkbox" id="f_release" checked> Release</label><label><input type="checkbox" id="f_snapshot"> Snapshot</label>
+<label><input type="checkbox" id="f_old_beta"> Beta</label><label><input type="checkbox" id="f_old_alpha"> Alpha</label></div>
+<div id="bottom">
+ <div class="grp"><select id="asel" onchange="acsel()" style="min-width:160px"></select><button onclick="aadd()"><i data-ic="plus"></i></button><button onclick="adel()"><i data-ic="trash"></i></button></div>
+ <div class="grp"><select id="ver"></select><select id="ldr"><option value="vanilla">Vanilla</option><option>fabric</option><option>forge</option><option>neoforge</option></select><button id="fbtn" onclick="$('flt').classList.toggle('show')" style="padding:8px 10px"><i data-ic="filter"></i></button></div>
+ <div class="pw"><button class="play" onclick="play()"><i data-ic="play"></i><span data-i="play"></span></button><div id="bar"></div></div>
+</div>
+</div>
+<script>const P={disc:'<path d="M12 4v11M7 11l5 5 5-5M5 20h14"/>',pack:'<rect x="4" y="4" width="16" height="16" rx="2"/><circle cx="9" cy="10" r="1.5"/><path d="M20 16l-5-5-8 8"/>',bulb:'<path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.5c.7.7 1 1.5 1 2.5h6c0-1 .3-1.8 1-2.5A6 6 0 0 0 12 3z"/>',left:'<path d="M15 5l-7 7 7 7"/>',right:'<path d="M9 5l7 7-7 7"/>',heart:'<path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.5-7 10-7 10z"/>',trash:'<path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14M10 10v6M14 10v6"/>',plus:'<path d="M12 5v14M5 12h14"/>',
+folder:'<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>',check:'<path d="M5 13l4 4L19 7"/>',
+down:'<path d="M12 4v11M7 11l5 5 5-5M5 20h14"/>',search:'<circle cx="11" cy="11" r="6"/><path d="M20 20l-4-4"/>',
+play:'<path d="M7 4l13 8-13 8z" fill="currentColor"/>',home:'<path d="M3 11l9-7 9 7M6 10v10h12V10"/>',
+mods:'<path d="M12 3l8 4.5v9L12 21l-8-4.5v-9zM12 12l8-4.5M12 12L4 7.5M12 12v9"/>',packs:'<rect x="4" y="4" width="16" height="6" rx="1"/><rect x="4" y="14" width="16" height="6" rx="1"/>',
+vers:'<path d="M4 6h16M4 12h16M4 18h10"/>',set:'<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/>',
+filter:'<path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/>',
+min:'<path d="M5 12h14"/>',max:'<rect x="6" y="6" width="12" height="12"/>',x:'<path d="M6 6l12 12M18 6L6 18"/>'};
+const ic=(n,s=16)=>`<svg class="ic" width="${s}" height="${s}" viewBox="0 0 24 24">${P[n]}</svg>`;
+document.querySelectorAll('[data-ic]').forEach(e=>e.innerHTML=ic(e.dataset.ic));
+
 const L={
-tr:{play:'Oyna',mods:'Modlar',packs:'Modpackler',settings:'Ayarlar',account:'Hesap',offline:'Offline giriş',search:'Ara',install:'Kur',autojoin:'Oyuna girince sunucuya otomatik gir',ram:'RAM',lang:'Dil',online:'Açık',off:'Kapalı',players:'oyuncu',login:'Önce giriş yap',done:'Kuruldu'},
-en:{play:'Play',mods:'Mods',packs:'Modpacks',settings:'Settings',account:'Account',offline:'Offline login',search:'Search',install:'Install',autojoin:'Auto-join server on game start',ram:'RAM',lang:'Language',online:'Online',off:'Offline',players:'players',login:'Log in first',done:'Installed'},
-es:{play:'Jugar',mods:'Mods',packs:'Modpacks',settings:'Ajustes',account:'Cuenta',offline:'Modo offline',search:'Buscar',install:'Instalar',autojoin:'Entrar al servidor automáticamente',ram:'RAM',lang:'Idioma',online:'En línea',off:'Fuera de línea',players:'jugadores',login:'Inicia sesión primero',done:'Instalado'},
-az:{play:'Oyna',mods:'Modlar',packs:'Modpacklər',settings:'Ayarlar',account:'Hesab',offline:'Offline giriş',search:'Axtar',install:'Quraşdır',autojoin:'Oyuna girəndə serverə avtomatik qoşul',ram:'RAM',lang:'Dil',online:'Aktiv',off:'Deaktiv',players:'oyunçu',login:'Əvvəlcə daxil ol',done:'Quraşdırıldı'}};
+tr:{play:'Oyna',mods:'Modlar',packs:'Modpackler',settings:'Ayarlar',account:'Hesap',offline:'Offline giriş',search:'Ara',install:'Kur',autojoin:'Oyuna girince sunucuya otomatik gir',ram:'RAM',lang:'Dil',online:'Açık',off:'Kapalı',players:'oyuncu',login:'Önce giriş yap',done:'Kuruldu',menu:'Ana Menü',discover:'Keşfet',krp:'Kaynak Paketleri',kshader:'Gölgelendiriciler',sname:'Arama adı',gver:'Oyun sürümü',platform:'Platform',sort:'Sırala',srel:'İlgili',sdl:'İndirme',sfol:'Takip',snew:'Yeni',supd:'Güncellenen',ldrf:'Mod yükleyici',any:'Hepsi',addacc:'Hesap ekle',addoff:'Offline ekle',addms:'Microsoft ile ekle',noacc:'Hesap ekle →',relogin:'Oturum süresi doldu, hesabı tekrar ekle',versions:'Sürümler',profiles:'Kurulumlar',create:'Oluştur',select:'Seç',open:'Klasör',vinst:'Kurulu sürümler',profile:'Kurulum',sel:'Seçili sürüm',installed:'Kurulu modlar',chooseLoader:'Yükleyici seç',chooseVersion:'Sürüm seç',confirm:'Bu modu kurmak istiyor musun?',yes:'Evet',no:'Hayır',delete:'Sil',nokey:'Ayarlardan CurseForge API anahtarı gir',blocked:'Bu mod dışarıdan indirmeye kapalı'},
+en:{play:'Play',mods:'Mods',packs:'Modpacks',settings:'Settings',account:'Account',offline:'Offline login',search:'Search',install:'Install',autojoin:'Auto-join server on game start',ram:'RAM',lang:'Language',online:'Online',off:'Offline',players:'players',login:'Log in first',done:'Installed',menu:'Home',discover:'Discover',krp:'Resource Packs',kshader:'Shaders',sname:'Search name',gver:'Game version',platform:'Platform',sort:'Sort',srel:'Relevant',sdl:'Downloads',sfol:'Follows',snew:'Newest',supd:'Updated',ldrf:'Mod loader',any:'Any',addacc:'Add account',addoff:'Add offline',addms:'Add with Microsoft',noacc:'Add account →',relogin:'Session expired, add the account again',versions:'Versions',profiles:'Installations',create:'Create',select:'Select',open:'Folder',vinst:'Installed versions',profile:'Installation',sel:'Selected version',installed:'Installed mods',chooseLoader:'Choose loader',chooseVersion:'Choose version',confirm:'Do you want to install this mod?',yes:'Yes',no:'No',delete:'Delete',nokey:'Enter a CurseForge API key in Settings',blocked:'This mod blocks third-party downloads'},
+es:{play:'Jugar',mods:'Mods',packs:'Modpacks',settings:'Ajustes',account:'Cuenta',offline:'Modo offline',search:'Buscar',install:'Instalar',autojoin:'Entrar al servidor automáticamente',ram:'RAM',lang:'Idioma',online:'En línea',off:'Fuera de línea',players:'jugadores',login:'Inicia sesión primero',done:'Instalado',menu:'Inicio',discover:'Explorar',krp:'Paquetes de recursos',kshader:'Shaders',sname:'Buscar nombre',gver:'Versión del juego',platform:'Plataforma',sort:'Ordenar',srel:'Relevante',sdl:'Descargas',sfol:'Seguidores',snew:'Nuevo',supd:'Actualizado',ldrf:'Cargador de mods',any:'Todos',addacc:'Añadir cuenta',addoff:'Añadir offline',addms:'Añadir con Microsoft',noacc:'Añadir cuenta →',relogin:'Sesión caducada, añade la cuenta de nuevo',versions:'Versiones',profiles:'Instalaciones',create:'Crear',select:'Elegir',open:'Carpeta',vinst:'Versiones instaladas',profile:'Instalación',sel:'Versión seleccionada',installed:'Mods instalados',chooseLoader:'Elige el loader',chooseVersion:'Elige la versión',confirm:'¿Quieres instalar este mod?',yes:'Sí',no:'No',delete:'Eliminar',nokey:'Introduce una clave de CurseForge en Ajustes',blocked:'Este mod no permite descargas externas'},
+az:{play:'Oyna',mods:'Modlar',packs:'Modpacklər',settings:'Ayarlar',account:'Hesab',offline:'Offline giriş',search:'Axtar',install:'Quraşdır',autojoin:'Oyuna girəndə serverə avtomatik qoşul',ram:'RAM',lang:'Dil',online:'Aktiv',off:'Deaktiv',players:'oyunçu',login:'Əvvəlcə daxil ol',done:'Quraşdırıldı',menu:'Ana menyu',discover:'Kəşf et',krp:'Resurs paketləri',kshader:'Şeyderlər',sname:'Axtarış adı',gver:'Oyun versiyası',platform:'Platforma',sort:'Sırala',srel:'Uyğun',sdl:'Yükləmə',sfol:'İzləyici',snew:'Yeni',supd:'Yenilənmiş',ldrf:'Mod yükləyici',any:'Hamısı',addacc:'Hesab əlavə et',addoff:'Offline əlavə et',addms:'Microsoft ilə əlavə et',noacc:'Hesab əlavə et →',relogin:'Sessiya bitdi, hesabı yenidən əlavə et',versions:'Versiyalar',profiles:'Quraşdırmalar',create:'Yarat',select:'Seç',open:'Qovluq',vinst:'Quraşdırılmış versiyalar',profile:'Kurulum',sel:'Seçilmiş versiya',installed:'Quraşdırılmış modlar',chooseLoader:'Yükləyici seç',chooseVersion:'Versiya seç',confirm:'Bu modu quraşdırmaq istəyirsən?',yes:'Bəli',no:'Xeyr',delete:'Sil',nokey:'Ayarlarda CurseForge API açarını daxil et',blocked:'Bu mod kənardan yükləməyə qapalıdır'}};
 let C,V=[],lang='tr',S=null;const $=id=>document.getElementById(id),t=k=>L[lang][k];
-function tr(){document.querySelectorAll('[data-i]').forEach(e=>e.textContent=t(e.dataset.i));$('lg').value=lang;paint()}
+function tr(){if(V.length)dvers();document.querySelectorAll('[data-i]').forEach(e=>e.textContent=t(e.dataset.i));$('lg').value=lang;paint()}
 async function pick(l){lang=l;await api.invoke('cfg:set',{lang:l});$('ov').style.display='none';tr()}
-document.querySelectorAll('.nav').forEach(n=>n.onclick=()=>{document.querySelectorAll('.nav,.tab').forEach(x=>x.classList.remove('on'));n.classList.add('on');$(n.dataset.t).classList.add('on')});
-function fill(){const on=['release','snapshot','old_beta','old_alpha'].filter(k=>$('f_'+k).checked);const cur=$('ver').value;
- $('ver').innerHTML=V.filter(v=>on.includes(v.type)).map(v=>`<option value="${v.id}" data-ty="${v.type}">${v.id}</option>`).join('');if(cur)$('ver').value=cur}
+document.querySelectorAll('.nav').forEach(n=>n.onclick=()=>{document.querySelectorAll('.nav,.tab').forEach(x=>x.classList.remove('on'));n.classList.add('on');$(n.dataset.t).classList.add('on');if(n.dataset.t==='mods')ilist();if(n.dataset.t==='disc'&&!D.inited){D.inited=1;dsearch()}if(n.dataset.t==='vers'){iload();vload()}});
+let SELV='';
+function updSel(){const v=$('ver').value;$('selv').textContent=v?v+' · '+$('ldr').value:'';api.invoke('cfg:set',{ver:v,ldr:$('ldr').value});api.invoke('inst:save',{name:(C&&C.inst)||'Default',ver:v,ldr:$('ldr').value})}
+function fill(){const on=['release','snapshot','old_beta','old_alpha'].filter(k=>$('f_'+k).checked);
+ $('ver').innerHTML=V.filter(v=>on.includes(v.type)||v.id===SELV).map(v=>`<option value="${v.id}" data-ty="${v.type}">${v.id}</option>`).join('');
+ if(SELV)$('ver').value=SELV;updSel();dvers()}
+$('ver').onchange=()=>{SELV=$('ver').value;updSel()};$('ldr').onchange=updSel;
 document.querySelectorAll('[id^=f_]').forEach(c=>c.onchange=fill);
 function paint(){if(!S)return;$('dot').className='dot'+(S.online?' on':'');
  $('sinfo').textContent=S.online?`${t('online')} · ${S.players?S.players.online+'/'+S.players.max:''} ${t('players')} · ${S.version||''} · ${S.motd||''}`:t('off')}
 async function stat(){S=await api.invoke('status');paint()}
-async function ms(){try{$('who').textContent=(await api.invoke('login:ms')).name}catch(e){$('log').textContent=e.message}}
-async function off(){const n=$('nick').value.trim();if(n)$('who').textContent=(await api.invoke('login:off',n)).name}
 async function play(){try{const o=$('ver').selectedOptions[0];await api.invoke('play',{v:o.value,type:o.dataset.ty,loader:$('ldr').value})}catch(e){$('log').textContent=e.message.includes('login')?t('login'):e.message}}
-async function srch(kind){const q=$(kind==='mod'?'q1':'q2').value;
- const r=await api.invoke('mr:search',{q,kind,v:$('ver').value,loader:$('ldr').value});
- $('r_'+kind).innerHTML=r.map(h=>`<div class="item"><img src="${h.icon_url||''}"><div><b>${h.title}</b><br><span class="m">${h.description}</span></div><button onclick="inst('${h.project_id}','${kind}',this)">${t('install')}</button></div>`).join('')}
-async function inst(id,kind,b){b.textContent='...';try{const r=await api.invoke('mr:install',{id,kind,v:$('ver').value,loader:$('ldr').value});
- if(r.v){$('ver').value=r.v;$('ldr').value=r.loader}b.textContent=t('done')}catch(e){b.textContent='✗'}}
+
 api.on('log',m=>{const l=$('log');l.textContent+=String(m).slice(0,200)+'\n';l.scrollTop=l.scrollHeight});
 api.on('progress',p=>$('bar').style.width=(p.task/p.total*100)+'%');
+
+let CUR=null,R=[];
+function md(h){$('md').style.display=h?'grid':'none';$('mdc').innerHTML=h||''}
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmt=n=>n>=1e6?Math.round(n/1e6)+'M':n>=1e3?Math.round(n/1e3)+'K':(n||0);
+let D={kind:'mod',page:0,total:1,R:[],src:'mr'},dT=null;
+function dsd(){clearTimeout(dT);dT=setTimeout(()=>{D.page=0;dsearch()},450)}
+function dgo(){D.page=0;dsearch()}
+function dpage(n){const p=D.page+n;if(p<0||p>=D.total)return;D.page=p;dsearch()}
+function dkind(k){D.kind=k;D.page=0;document.querySelectorAll('.sub').forEach(b=>b.classList.toggle('on',b.dataset.k===k));
+ $('dsrc').disabled=k!=='mod';if(k!=='mod')$('dsrc').value='mr';$('dlw').style.display=(k==='mod'||k==='modpack')?'':'none';dsearch()}
+function dvers(){const c=$('dver').value;$('dver').innerHTML=`<option value="">${t('any')}</option>`+V.filter(v=>v.type==='release').map(v=>`<option>${v.id}</option>`).join('');$('dver').value=c}
+async function dsearch(){const k=D.kind,src=k==='mod'?$('dsrc').value:'mr';
+ try{const r=await api.invoke('mod:search',{src,kind:k,q:$('dq').value,v:$('dver').value,loader:(k==='mod'||k==='modpack')?$('dldr').value:'',sort:$('dsort').value,page:D.page});
+  D.R=r.hits;D.src=src;D.total=Math.max(1,Math.ceil(r.total/20));$('dpg').textContent=(D.page+1)+' / '+D.total;
+  $('dlist').innerHTML=r.hits.map((h,i)=>`<div class="pc" onclick="dopen(${i})"><img src="${esc(h.icon)}" onerror="this.style.visibility='hidden'"><div class="pb"><div><b>${esc(h.title)}</b> <span class="m">| ${esc(h.author)}</span></div><div class="m pd">${esc(h.description)}</div><div class="tags">${(h.cats||[]).slice(0,5).map(c=>`<span>${esc(c)}</span>`).join('')}</div></div><div class="ps"><span class="bd">${src==='cf'?'CurseForge':'Modrinth'}</span><div>${ic('down')} ${fmt(h.downloads)}</div><div>${ic('heart')} ${fmt(h.follows)}</div></div></div>`).join('')||'<span class="m">—</span>'}
+ catch(e){$('dlist').textContent=e.message.includes('nokey')?t('nokey'):e.message}}
+async function dopen(i){const m=D.R[i];CUR={m,src:D.src,kind:D.kind};md(`<h3>${esc(m.title)}</h3><p class="m">...</p>`);
+ try{CUR.files=await api.invoke('mod:files',{src:CUR.src,id:m.id})}catch(e){return md(`<p>${esc(e.message)}</p>`)}
+ if(D.kind==='mod'||D.kind==='modpack'){const ls=[...new Set(CUR.files.flatMap(f=>f.loaders))].filter(l=>['forge','fabric','neoforge','quilt'].includes(l));
+  md(`<h3>${esc(m.title)}</h3><p>${t('chooseLoader')}</p>`+(ls.map(l=>`<button onclick="pickL('${l}')">${l}</button>`).join(' ')||'—'))}
+ else pickL(null)}
+function pickL(l){CUR.l=l;const fs=CUR.files.filter(f=>!l||f.loaders.includes(l));
+ md(`<h3>${esc(CUR.m.title)}${l?' · '+l:''}</h3><p>${t('chooseVersion')}</p><div style="max-height:260px;overflow:auto">`+fs.map(f=>`<button style="display:block;width:100%;margin:4px 0;text-align:left" onclick="pickF('${esc(f.id)}')">${esc(f.name)} <span class="m">(${esc(f.mc.slice(0,4).join(', '))})</span></button>`).join('')+'</div>')}
+function pickF(id){CUR.f=id;md(`<h3>${t('confirm')}</h3><button onclick="doInst()">${t('yes')}</button><button onclick="md()">${t('no')}</button>`)}
+async function doInst(){md('<p>...</p>');try{const r=await api.invoke('mod:install',{src:CUR.src,id:CUR.m.id,fid:CUR.f,kind:CUR.kind});
+ if(r&&r.v){C=await api.invoke('cfg:get');SELV=r.v;$('ldr').value=r.loader;fill();iload()}
+ md(`<p>${t('done')}</p><button onclick="md()">OK</button>`);ilist()}catch(e){md(`<p>${e.message.includes('blocked')?t('blocked'):esc(e.message)}</p><button onclick="md()">OK</button>`)}}
+async function ilist(){const l=await api.invoke('mods:list');$('inst').innerHTML=l.map((n,i)=>`<div class="item"><div>${esc(n)}</div><button title="${t('delete')}" onclick="del(${i})">${ic('trash')}</button></div>`).join('')||'<span class="m">—</span>';window.IL=l}
+async function del(i){await api.invoke('mods:del',window.IL[i]);ilist()}
+for(let i=0;i<22;i++){const p=document.createElement('i');p.className='px';p.style.cssText=`left:${Math.random()*100}%;background:${['#22c55e','#8b5cf6','#3b82f6','#ef4444','#facc15'][i%5]};animation-duration:${8+Math.random()*10}s;animation-delay:${-Math.random()*14}s`;$('bg').appendChild(p)}
+document.addEventListener('contextmenu',e=>e.preventDefault());
+document.addEventListener('click',e=>{if(!e.target.closest('#flt,#fbtn'))$('flt').classList.remove('show')});
+
+let INS=[];
+async function iload(){INS=await api.invoke('inst:list');
+ $('psel').innerHTML=INS.map(i=>`<option>${i.name}</option>`).join('');$('psel').value=C.inst||'Default';
+ $('ilst').innerHTML=INS.map((i,k)=>`<div class="item"><div><b>${i.name}</b> <span class="m">${i.ver||'—'} · ${i.ldr||'vanilla'}</span></div><button title="${t('select')}" onclick="selInst(INS[${k}].name)">${ic('check')}</button><button title="${t('open')}" onclick="api.invoke('inst:open',INS[${k}].name)">${ic('folder')}</button><button title="${t('delete')}" onclick="idel(${k})">${ic('trash')}</button></div>`).join('')}
+async function selInst(n){C=await api.invoke('cfg:set',{inst:n});const i=INS.find(x=>x.name===n);
+ if(i&&i.ver){SELV=i.ver;$('ldr').value=i.ldr||'vanilla';fill()}$('psel').value=n;ilist()}
+async function icreate(){const n=$('iname').value.trim();if(!n)return;
+ const r=await api.invoke('inst:create',{name:n,ver:$('ver').value,ldr:$('ldr').value});$('iname').value='';await iload();selInst(r)}
+async function idel(k){await api.invoke('inst:del',INS[k].name);C=await api.invoke('cfg:get');await iload();selInst(C.inst)}
+async function vload(){const l=await api.invoke('vers:list');window.VL=l;
+ $('vlst').innerHTML=l.map((n,i)=>`<div class="item"><div>${esc(n)}</div><button title="${t('delete')}" onclick="vdel(${i})">${ic('trash')}</button></div>`).join('')||'<span class="m">—</span>'}
+async function vdel(i){await api.invoke('vers:del',VL[i]);vload()}
+
+async function aload(){const r=await api.invoke('acc:list');
+ $('asel').innerHTML=r.list.map(a=>`<option value="${a.id}">${a.type==='ms'?'\u25C6':'\u25CF'} ${a.name}</option>`).join('')||`<option value="">${t('noacc')}</option>`;if(r.acc)$('asel').value=r.acc}
+async function acsel(){try{await api.invoke('acc:select',$('asel').value)}catch(e){md(`<p>${t('relogin')}</p><button onclick="md()">OK</button>`)}}
+function aadd(){md(`<h3>${t('addacc')}</h3><input id="nn" placeholder="Nick" style="width:100%;margin-bottom:8px"><button style="width:100%;margin-bottom:8px" onclick="addoff()">${t('addoff')}</button><button style="width:100%" onclick="addms()">${t('addms')}</button>`)}
+async function addoff(){const n=$('nn').value.trim();if(!n)return;try{await api.invoke('acc:add-off',n);md();aload()}catch(e){md(`<p>${e.message}</p><button onclick="md()">OK</button>`)}}
+async function addms(){md('<p>...</p>');try{await api.invoke('acc:add-ms');md()}catch(e){md(`<p>${e.message}</p><button onclick="md()">OK</button>`)}aload()}
+async function adel(){const id=$('asel').value;if(id){await api.invoke('acc:del',id);aload()}}
 (async()=>{C=await api.invoke('cfg:get');lang=C.lang||'tr';if(!C.lang)$('ov').style.display='grid';
- $('aj').checked=C.autoJoin;$('ram').value=C.ram;if(C.user)$('who').textContent=C.user.name;
- V=await api.invoke('versions');fill();tr();stat();setInterval(stat,30000)})();
+ $('cfk').value=C.cfKey||'';$('aj').checked=C.autoJoin;ilist();iload();$('ram').value=C.ram;aload();
+ SELV=C.ver||'';if(C.ldr)$('ldr').value=C.ldr;V=await api.invoke('versions');fill();tr();stat();setInterval(stat,30000)})();
 </script></body></html>
